@@ -1,0 +1,17 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+# Create your models here.
+
+
+class Article(models.Model):
+    # image = models.FileField(blank=False, null=False)
+    titre = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    content = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to="item_images", blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name="items", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titre
