@@ -5,6 +5,7 @@ from .models import projetModel
 from rest_framework.decorators import api_view
 from rest_framework import status
 import time
+import os
 
 # Create your views here.
 
@@ -16,6 +17,7 @@ def get_list(self):
             "projects": projects,
         },
     )
+
 
 @api_view(["GET"])
 def get(request, _id):
@@ -37,23 +39,14 @@ def get(request, _id):
 @api_view(["POST"])
 def create(request):
     if request.method == "POST":
-        # print(request.FILES)
-        # time.sleep(2000)
         form = NewProject(request.POST, request.FILES)
 
     if form.is_valid():
         item = form.save(commit=False)
-        # item.created_by = request.user
-
         item.save()
-        projet = projetModel.objects.filter(title=request.data.get("title")).values()
-        # return JsonResponse({"course": list(course)})
+        projet = projetModel.objects.filter(
+            title=request.data.get("title")).values()
         return Response(projet[0])
-        # return Response(
-        #     {
-        #         "new_project": f"{item}",
-        #     },
-        # )
     else:
         form = NewProject()
 
@@ -71,10 +64,22 @@ def remove(request, _id):
             status=status.HTTP_201_CREATED,
         )
 
+
 @api_view(["PUT"])
 def updatecourse(request, _id):
-    # projet = projetModel.objects.get(id=request.data.get("id"))
+
     projet = projetModel.objects.get(id=_id)
+    if len(request.FILES) != 0:
+
+        if request.FILES.get('photoUrl'):
+            os.remove(projet.photoUrl.path)
+            projet.photoUrl = request.FILES['photoUrl']
+        if request.FILES.get('logoUrl'):
+            os.remove(projet.logoUrl.path)
+            projet.logoUrl = request.FILES['logoUrl']
+        if request.FILES.get('sponsorLogoUrl'):
+            os.remove(projet.sponsorLogoUrl.path)
+            projet.sponsorLogoUrl = request.FILES['sponsorLogoUrl']
     projet.title = request.data.get("title")
     projet.description = request.data.get("description")
     projet.link = request.data.get("link")
@@ -83,9 +88,3 @@ def updatecourse(request, _id):
     # projetEdited = projetModel.objects.filter(title=request.data.get("id")).values()
     projetEdited = projetModel.objects.filter(id=_id).values()
     return Response(projetEdited[0])
-    # return Response(
-    #     {
-    #         "info": "update",
-    #     },
-    #     status=status.HTTP_201_CREATED,
-    # )
