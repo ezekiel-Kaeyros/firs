@@ -1,0 +1,109 @@
+version: '3.3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+    networks:
+      - my_network
+
+  backend_vmdo:
+    container_name: backend_vmdo
+    image: bdfc54c40ca6
+    environment:
+      - VIRTUAL_HOST=v2202211186717206474.powersrv.de
+      - LETSENCRYPT_HOST=v2202211186717206474.powersrv.de
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - my_network
+    volumes:
+      - backend_data:/path/to/mount/point
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DHPARAM_GENERATION: "false"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./etc/nginx/certs:/etc/nginx/certs
+      - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - nginx_proxy_html:/usr/share/nginx/html
+    networks:
+      - my_network
+
+  nginx-proxy-letsencrypt:
+    container_name: nginx-proxy-letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./etc/nginx/certs:/etc/nginx/certs
+      - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - nginx_proxy_html:/usr/share/nginx/html
+    environment:
+      - DEFAULT_EMAIL=your@email.com
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_data:
+    driver: local
+  nginx_proxy_html:
+
+
+  aws documentation:
+
+Oui, chez AWS, lorsque vous réservez des instances EC2, vous payez un montant initial pour la réservation, puis vous bénéficiez de tarifs réduits sur les heures d'utilisation de ces instances réservées.
+
+AWS propose différents modèles de réservation pour les instances EC2 :
+
+Réservations à long terme (Réservations standard) : Vous pouvez réserver des instances EC2 pour une durée de un ou trois ans, ce qui vous permet de bénéficier de tarifs réduits par rapport aux instances à la demande. Vous payez un montant initial pour la réservation, puis vous êtes facturé uniquement pour les heures d'utilisation de l'instance réservée.
+
+Réservations Convertibles : Il s'agit d'un type de réservation à long terme qui vous offre la flexibilité de modifier les attributs de l'instance réservée, tels que le type d'instance, la zone de disponibilité, etc., sans frais supplémentaires.
+
+Réservations d'épargne d'instance (RI Savings Plans) : Ce modèle de réservation vous permet de bénéficier de tarifs réduits sur les instances EC2, ainsi que sur d'autres services AWS tels que Amazon RDS, Amazon Redshift, etc. Vous achetez une certaine quantité de capacité d'instance pendant une période de un ou trois ans, et vous bénéficiez de tarifs réduits sur les heures d'utilisation correspondantes.
+
+Il est important de noter que les réservations d'instances sont un engagement financier à long terme. Avant de réserver des instances EC2, il est recommandé de bien comprendre vos besoins en termes de capacité et de durée d'utilisation, afin de choisir le modèle de réservation le plus adapté à votre cas d'utilisation.
+
+
+----------------------------------------------------------------------------------------------
+
+
+Voici quelques stratégies courantes pour réduire les coûts des instances sur AWS :
+
+Utilisation de réservations d'instances : Réservez des instances EC2 à long terme pour bénéficier de tarifs réduits. Évaluez vos besoins à long terme et réservez les instances appropriées pour obtenir des économies significatives.
+
+Utilisation des instances réservées Convertibles : Optez pour des réservations d'instances convertibles si vous avez besoin de flexibilité pour modifier les attributs des instances réservées. Cela vous permet de vous adapter aux changements de besoins sans devoir payer des frais supplémentaires.
+
+Utilisation des instances Spot : Les instances Spot sont des instances EC2 à prix réduit qui peuvent être utilisées lorsque vous avez des charges de travail flexibles ou non critiques dans le temps. Les instances Spot peuvent être nettement moins chères que les instances à la demande, mais leur disponibilité est soumise à une fluctuation des prix en fonction de l'offre et de la demande.
+
+Utilisation des instances de taille appropriée : Choisissez la taille d'instance EC2 qui correspond le mieux à vos besoins en termes de capacité de calcul, de mémoire et de stockage. En utilisant des instances de taille appropriée, vous éviterez de payer pour des ressources inutilisées.
+
+Analyse des métriques de performance : Surveillez les métriques de performance de vos instances EC2 pour identifier les opportunités d'optimisation des ressources. Par exemple, vous pourriez réduire la taille d'instance si vous constatez que la capacité de calcul est sous-utilisée.
+
+Utilisation des instances réservées d'épargne d'instance (RI Savings Plans) : Les RI Savings Plans offrent des tarifs réduits non seulement sur les instances EC2, mais aussi sur d'autres services AWS. Explorez cette option si vous utilisez plusieurs services AWS de manière intensive.
+
+Automatisation et gestion des ressources : Utilisez des outils d'automatisation tels que AWS Lambda et AWS Auto Scaling pour optimiser l'utilisation des ressources. Cela vous permet de mettre en place des politiques de dimensionnement automatique pour augmenter ou réduire la capacité en fonction de la demande réelle.
+
+Gestion des zones de disponibilité : Évaluez les tarifs des instances EC2 dans différentes zones de disponibilité et choisissez celles qui offrent les tarifs les plus avantageux pour vos besoins spécifiques.
+
+Il est important de noter que chaque cas d'utilisation est unique, et les stratégies pour réduire les coûts peuvent varier en fonction des besoins spécifiques de votre application et de votre architecture. Il est recommandé de surveiller régulièrement vos ressources et de réévaluer votre stratégie en fonction de l'évolution de vos besoins et des nouvelles options offertes par AWS.

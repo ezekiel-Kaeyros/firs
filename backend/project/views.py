@@ -72,13 +72,13 @@ def updatecourse(request, _id):
     if len(request.FILES) != 0:
 
         if request.FILES.get('photoUrl'):
-            os.remove(projet.photoUrl.path)
+            # os.remove(projet.photoUrl.path)
             projet.photoUrl = request.FILES['photoUrl']
         if request.FILES.get('logoUrl'):
-            os.remove(projet.logoUrl.path)
+            # os.remove(projet.logoUrl.path)
             projet.logoUrl = request.FILES['logoUrl']
         if request.FILES.get('sponsorLogoUrl'):
-            os.remove(projet.sponsorLogoUrl.path)
+            # os.remove(projet.sponsorLogoUrl.path)
             projet.sponsorLogoUrl = request.FILES['sponsorLogoUrl']
     projet.title = request.data.get("title")
     projet.description = request.data.get("description")
