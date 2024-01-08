@@ -42,13 +42,17 @@ def create(request):
         form = NewProject(request.POST, request.FILES)
 
     if form.is_valid():
-        item = form.save(commit=False)
-        item.save()
-        projet = projetModel.objects.filter(
-            title=request.data.get("title")).values()
-        return Response(projet[0])
+
+        try:
+            item = form.save(commit=False)
+            item.save()
+            projet = projetModel.objects.filter(
+                title=request.data.get("title")).values()
+            return Response(projet[0])
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
     else:
-        form = NewProject()
+        return Response({"error": "bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["DELETE"])

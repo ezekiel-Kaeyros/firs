@@ -34,13 +34,15 @@ def create(request):
         data = {"description": request.data.get("description"), "link": request.data.get(
             "link"), "title": request.data.get("title"), "author": request.data.get("author")}
         form = NewCourse(data)
-
     if form.is_valid():
-        item = form.save(commit=False)
-        item.save()
-        projet = CourseModels.objects.filter(
-            title=request.data.get("title")).values()
-        return Response(projet[0])
+        try:
+            item = form.save(commit=False)
+            item.save()
+            projet = CourseModels.objects.filter(
+                title=request.data.get("title")).values()
+            return Response(projet[0])
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"error": "bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
