@@ -17,15 +17,17 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include, re_path
-from django.views.static import serve
+from django.urls import path, include
 
 urlpatterns = [
     path("vmdo_admin/", include("vmdo_admin.urls")),
     path("api/", include("api.urls")),
     # path("articles/", include("articles.urls")),
-    path("articles", include("article.urls")),
+    path("coursescategory/", include("CourseCategory.urls")),
+    path("user/", include("users.urls")),
+    path("inscription/", include("Inscription.urls")),
     path("courses/", include("courses.urls")),
+    path("projectcategory/", include("ProjetCategory.urls")),
     path("project/", include("project.urls")),
     path("*", include("base.urls")),
     path("", include("base.urls")),
@@ -34,5 +36,4 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

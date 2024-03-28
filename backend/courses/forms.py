@@ -5,9 +5,4 @@ from django import forms
 class NewCourse(forms.ModelForm):
     class Meta:
         model = CourseModels
-        fields = (
-            "title",
-            "description",
-            "link",
-            "author",
-        )
+        fields = ("title", "content")

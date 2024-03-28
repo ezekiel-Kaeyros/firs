@@ -28,12 +28,13 @@ SECRET_KEY = "django-insecure-jb2m-ms_*$*si+r^!j66habz%$i+2(t-q1x0*2=rw5+cgrw*w@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'ec2-13-50-135-213.eu-north-1.compute.amazonaws.com:8000', # AWS
-    '185.163.119.29', # Netcup IP Address
-    'v2202211186717206474.powersrv.de' # Netcup DNS
+    "localhost",
+    "127.0.0.1",
+    "ec2-13-50-135-213.eu-north-1.compute.amazonaws.com:8000",  # AWS
+    "185.163.119.29",  # Netcup IP Address
+    "v2202211186717206474.powersrv.de",  # Netcup DNS
 ]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
 
 # ["ec2-13-50-135-213.eu-north-1.compute.amazonaws.com"]
 # DEBUG = False
@@ -50,17 +51,21 @@ INSTALLED_APPS = [
     "rest_framework",
     "api",
     "base",
-    "article",
-    "articles",
+    "CourseCategory",
+    "ProjetCategory",
+    "Inscription",
     "project",
     "corsheaders",
     "courses",
+    "users",
+    "category",
     "vmdo_admin",
     "storages",
     "tailwind",
     "theme",
-    "django_browser_reload"
+    "django_browser_reload",
 ]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -101,11 +106,11 @@ WSGI_APPLICATION = "edie_server.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # DATABASES = {
-#      "default": {
-#          "ENGINE": "django.db.backends.sqlite3",
-#          "NAME": BASE_DIR / "db.sqlite3",
-#      }
-#  }
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # env = environ.Env()
@@ -138,17 +143,17 @@ SECRET_KEY = "edie-app"
 # }
 
 import os
+
 DATABASES = {
-   'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_NAME"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": "db",
+        "PORT": 5432,
     }
 }
-
 
 
 # Password validation
